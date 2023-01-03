@@ -7,42 +7,22 @@
 # (i.e., "ace" is a subsequence of "abcde" while "aec" is not).
 
 class Solution(object):
-    # def isSubsequence(self, s, t):
-    #     new_string = ''
-    #     # new_string = []
-    #     temp_index = 0
-
-    #     for index, i in enumerate(t):
-    #         temp_index = index
-
-    #         print(temp_index)
-
-    #         for y in s:
-    #             if i == y:
-    #                 new_string = new_string + y
-
-    #     print(new_string)
-
-        # if s == new_string:
-        #   print(True)
-        # else:
-        #   print(False)
-
-
     def isSubsequence(self, s: str, t: str) -> bool:
-        if len(s) == 0:
-            return True
-        seen = 0
-        for c in t:
-            if s[seen] == c:
-                seen += 1
-            if seen == len(s):
-                return True
-        return False
+        LEFT_BOUND, RIGHT_BOUND = len(s), len(t)
 
+        p_left = p_right = 0
+        while p_left < LEFT_BOUND and p_right < RIGHT_BOUND:
+            # move both pointers or just the right pointer
+            if s[p_left] == t[p_right]:
+                p_left += 1
+
+            p_right += 1
+
+        return p_left == LEFT_BOUND
 
 s = "abc"
-t = "angchnb"
+t = "ahgdcbsss"
 
-sol = Solution()
-sol.isSubsequence(s, t)
+if __name__ == "__main__":
+    sol = Solution()
+    sol.isSubsequence(s, t)
