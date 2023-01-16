@@ -18,6 +18,8 @@
 
 
 require 'minitest/autorun'
+require 'pry'
+require 'pry-nav'
 
 # MiniTest Running:
 
@@ -129,10 +131,9 @@ class PigLatinTranslater
       end
 
       strip_w = strip_w.join
-      first_l = strip_w[0]
-      second_l = strip_w[1]
 
-      translator = find_case_and_translate(first_l, second_l, strip_w, word_end)
+      translator = find_case(strip_w)
+      translator += word_end
 
       new_word << translator
     end
@@ -140,24 +141,23 @@ class PigLatinTranslater
     new_word.join(' ')
   end
 
-  def find_case_and_translate(first_l, second_l, strip_w, word_end)
-    find_case_and_translate =
-      if first_case(first_l)
-        first_case_translator(first_l, second_l, strip_w)
-      elsif second_case(first_l, second_l)
-        second_case_translator(first_l, second_l, strip_w)
-      elsif third_case(first_l, second_l)
-        third_case_translator(first_l, second_l, strip_w)
-      end
-    find_case_and_translate += word_end
+  def find_case(strip_w)
+    case strip_w
+    when strip_w.downcase then first_case_translator(strip_w)
+    when strip_w.upcase then second_case_translator(strip_w)
+    when strip_w.capitalize then third_case_translator(strip_w)
+    else false
+    end
   end
 
-  def first_case_translator(first_l, second_l, strip_w)
+  def first_case_translator(strip_w)
+    first_l = strip_w[0]
+
     if three_letter_blends.include?(strip_w[..2].downcase)
       strip_w[3..strip_w.length] + strip_w[..2].downcase + KEY_AY
-    elsif second_l == second_l.downcase && consonant_blends.include?(strip_w[..1])
+    elsif consonant_blends.include?(strip_w[..1])
       strip_w[2..strip_w.length] + strip_w[..1] + KEY_AY
-    elsif second_l == second_l.downcase && consonant_blends.include?(strip_w[..1]) && three_letter_blends.include?(strip_w[2].downcase)
+    elsif consonant_blends.include?(strip_w[..1]) && three_letter_blends.include?(strip_w[2].downcase)
       strip_w[3..strip_w.length] + strip_w[..2] + KEY_AY
     elsif !dictionary_vowels.include?(first_l.upcase)
       strip_w[1..strip_w.length] + first_l + KEY_AY
@@ -166,7 +166,8 @@ class PigLatinTranslater
     end
   end
 
-  def second_case_translator(first_l, _second_l, strip_w)
+  def second_case_translator(strip_w)
+    first_l = strip_w[0]
     if !dictionary_vowels.include?(first_l)
       strip_w[1..strip_w.length] + first_l + KEY_AY.upcase
     else
@@ -174,7 +175,10 @@ class PigLatinTranslater
     end
   end
 
-  def third_case_translator(first_l, second_l, strip_w)
+  def third_case_translator(strip_w)
+    first_l = strip_w[0]
+    second_l = strip_w[1]
+
     if consonant_blends.include?(strip_w[..1].downcase)
       strip_w[2].upcase + strip_w[3..strip_w.length] + first_l.downcase + second_l.downcase + KEY_AY
     elsif !dictionary_vowels.include?(first_l)
@@ -197,16 +201,14 @@ class PigLatinTranslater
   def three_letter_blends
     %w[shr spl squ str thr sch]
   end
-
-  def first_case(first_l)
-    first_l == first_l.downcase
-  end
-
-  def second_case(first_l, second_l)
-    first_l == first_l.upcase && second_l != second_l.downcase
-  end
-
-  def third_case(first_l, second_l)
-    first_l == first_l.upcase && second_l == second_l.downcase
-  end
 end
+
+# def parse_word(strip_w)
+#   UPCASE = 1
+#   DOWNCASE = 2
+#   TITLE = 3
+#   CONSTANT_BLENDS = 4
+#   THREE_LETTERS_BLENDS = 5
+#   DICTIONARY_VOWELS = 6
+#   WRONG = 0
+# end
