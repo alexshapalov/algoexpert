@@ -20,8 +20,8 @@ end
 ### OR
 
 def detect_capital_use(word)
-  [word.capitalize, word.upcase, word.downcase].include?(word) ? true : false
+  [word.capitalize, word.upcase, word.downcase].include?(word)
 end
 
 word = "USA"
-p detect_capital_use(word)
+detect_capital_use(word)
