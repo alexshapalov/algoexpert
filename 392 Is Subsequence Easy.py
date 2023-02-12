@@ -8,21 +8,28 @@
 
 class Solution(object):
     def isSubsequence(self, s: str, t: str) -> bool:
-        LEFT_BOUND, RIGHT_BOUND = len(s), len(t)
+        S_LEN = len(s) # 3
+        T_LEN = len(t)
 
-        p_left = p_right = 0
-        while p_left < LEFT_BOUND and p_right < RIGHT_BOUND:
+        s_left = t_right = 0
+        while s_left < S_LEN and t_right < T_LEN:
             # move both pointers or just the right pointer
-            if s[p_left] == t[p_right]:
-                p_left += 1
+            if s[s_left] == t[t_right]:
+                s_left += 1
 
-            p_right += 1
+                # a == a # 1
+                # b == b # 2
+                # c ==   c # 3
 
-        return p_left == LEFT_BOUND
+            t_right += 1
+
+        return s_left == S_LEN
 
 s = "abc"
-t = "ahgdcbsss"
+t = "iiabcuuu"
 
 if __name__ == "__main__":
     sol = Solution()
     sol.isSubsequence(s, t)
+
+    print(sol.isSubsequence(s, t))
